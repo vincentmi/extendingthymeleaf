@@ -9,7 +9,7 @@
 
 Dialects 是实现了org.thymeleaf.dialect.IDialect 接口的对象, 接口是这样的:
 
- 
+```
 public interface IDialect {
 
     public String getPrefix();
@@ -19,9 +19,7 @@ public interface IDialect {
 
     public Set<IDocTypeTranslation> getDocTypeTranslations();
     public Set<IDocTypeResolutionEntry> getDocTypeResolutionEntries();
-    }
-
-
+}```
 
 让我们一步步来看他的方法:
 
@@ -80,10 +78,9 @@ Matcher对象将检查节点的类型、名字和或属性（如果是一个DOM�
 
 最终这个方法做真正的工作：
 
-      public ProcessorResult process(final Arguments arguments,
+    public ProcessorResult process(final Arguments arguments,
                 final ProcessorMatchingContext processorMatchingContext, final Node node);
                 
-
                 
                 
 process(...) 有三个参数:
@@ -120,9 +117,9 @@ Thymeleaf提供一个抽象工具类，用于扩展处理器，```org.thymeleaf.
 
     ...
 
-     }
+      }
       
-     
+      
 ### 特殊类型的处理器
 
 虽然处理器可以在任何DOM树上执行。Thymeleaf内部执行引擎有两种特别类型的处理器用于提高效率：属性处理器和元素处理器。

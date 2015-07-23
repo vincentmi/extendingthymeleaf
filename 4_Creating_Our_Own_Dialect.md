@@ -1,6 +1,6 @@
 # 创建我们自己的方言
 
-4.1. Extrathyme: a website for Thymeland’s football league
+## Extrathyme: 麝香草世界的足球联赛网站
 
 Football is a popular sport in Thymeland1. There is a 10-team league going on there each season, and its organizers have just asked us to create a website for it called “Extrathyme”.
 

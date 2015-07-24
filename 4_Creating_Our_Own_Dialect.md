@@ -20,6 +20,7 @@
 - ```score:classforposition```属性 根据备注设置颜色，蓝色背景表示可以参加世界锦标赛，绿色可以参加附加赛，红色会降级.
 -  ```score:headlines``` 标签用于显示一个最近比赛的黄色的框到顶部。这个标签需要支持一个order属性 ：random:为了随机显示最近的比赛 latest显示最近的比赛，默认只显示最近的比赛。我们的标签看起来像这样，使用了th和score属性：
 
+```html
 		<!DOCTYPE html>
 		<html xmlns:th="http://www.thymeleaf.org" xmlns:score="http://thymeleafexamples">
 
@@ -92,6 +93,7 @@
 		  </body>
 
 		</html>
+```
 	
 请注意，我们增加了第二和第三行到表中，由解析器的注释包围<！ - /*... */ - >，这样我们可以再浏览器打开时显示一个近似的原型。
 
@@ -104,6 +106,7 @@
 
 下面是我们的代码:
 
+```java
 			public class ClassForPositionAttrProcessor  extends AbstractAttributeModifierAttrProcessor {
 
 			    public ClassForPositionAttrProcessor() {
@@ -191,15 +194,18 @@
 			    }
 			}
 			
+```
+			
 如你所见，在这种情况下我们使用便利的抽象类没有直接对DOM树进行修改，而只需要创建并返回一个需要设置到标签中设置的一组新值的Map。
 
 非常重要的一点，我们创建的这些属性支持标准语法的表达式运算（在标准方言和Spring  标准方言中都用到了），我们可以这样设置变量 ${var} , #{messageKey} ,使用条件表达式等等。 我们在我们的模板中这样使用。
 
-
+```html
 	<tr th:each="t : ${teams}" score:classforposition="${tStat.count}">
+```
 
 为了计算这些表达式（或者叫做Thymeleaf标准表达式），首先我们需要获取标准表达式的解析器，然后解析属性值，然后计算解析后的表达式。	
-
+```java
 	final IStandardExpressionParser parser =
 	        StandardExpressions.getExpressionParser(configuration);
 
@@ -208,6 +214,7 @@
 
 	final Integer position =
 	        (Integer) expression.execute(configuration, arguments);
+```
 
 
 ## 显示一个国际化备注
@@ -216,6 +223,7 @@
 我们将不会设置一个标签属性到主标签，也不会和th:text一样设置标签的内容。
 我们需要访问从我们的代码访问国际化消息系统显示选定的locale的相应消息。这次我们将使用另外一个不同的抽象类AbstractTextChildModifierAttrProcessor，特别设计用于设置标签的文本内容。我们的代码如下：
 
+```java
 	public class RemarkForPositionAttrProcessor
 	        extends AbstractTextChildModifierAttrProcessor {
 
@@ -277,14 +285,17 @@
 	    }
 
 	}
-	
+```	
 
 我们使用这段代码访问国际化消息系统：
 
+```java
 			return getMessage(arguments, "remarks." + remark.toString(), new Object[0]);
+```
 
 事实上这不是唯一的方式。AbstractProcessor 提供了3个方法从属性 处理器获取国际化消息。以下2个方法从模板的消息文件和控制器的消息文件获取：
 
+```java
 	protected String getMessageForTemplate(
 	        final Arguments arguments, final TemplateResolution templateResolution,
 	        final String messageKey, final Object[] messageParameters);
@@ -292,8 +303,9 @@
 	protected String getMessageForProcessor(
 	        final Arguments arguments, final String messageKey,
 	        final Object[] messageParameters);
-	        
-	getMessageForTemplate(...) 使用模板引擎当前注册的外部机制去查询期望的消息，例如：uses the Template Engine’s currently registered externalization mechanisms to look for the desired message. For example:
+```	    
+    
+getMessageForTemplate(...) 使用模板引擎当前注册的外部机制去查询期望的消息，例如：uses the Template Engine’s currently registered externalization mechanisms to look for the desired message. For example:
 
 在一个Spring应用程序中，我们可以使用了一个指定的Message Resolver 来查询Spring的注册到应用程序中的MessageSource对象。当不在一个Spring应用程序中时，我们可能会使用Thymeleaf的标准Message Resolver去查找与当前模板同名的.properties文件。
 
@@ -306,10 +318,12 @@ getMessageForProcessor(...)使用组件化的消息解决方案，如果你愿�
 
 最后，这是第三个方法，我们用在我们的代码中的方法:
 
+```java
 	protected String getMessage(
 	        final Arguments arguments, final TemplateResolution templateResolution,
 	        final String messageKey, final Object[] messageParameters);
-	        
+```	        
+
 getMessage(...)的行为相当于以上两个方法的组合。首先他尝试通过模板资源文件(在应用程序中定义的资源文件)去找到需要的消息 ，如果没有找到就从处理器的资源文件中查找。这样应用如果需要的话应用程序可以覆盖在方言处理器中定义的消息。
 
 ## 用于显示头条的元素处理器 
@@ -321,7 +335,8 @@ getMessage(...)的行为相当于以上两个方法的组合。首先他尝试�
 
 这个处理器将由org.thymeleaf.processor.element.AbstractElementProcessor进行扩展，但是和属性处理器一样，我们不直接从AbstractElementProcessor扩展，而是从Thymeleaf提供的便利的抽象类AbstractMarkupSubstitutionElementProcessor进行扩展。这个基础的元素处理器用于，在模板处理时简单的生成DOM节点替换主标签。	
 	代码如下:
-
+	
+```java
 	public class HeadlinesElementProcessor extends AbstractMarkupSubstitutionElementProcessor {
 
 	    private final Random rand = new Random(System.currentTimeMillis());
@@ -385,12 +400,16 @@ getMessage(...)的行为相当于以上两个方法的组合。首先他尝试�
 
 	}
 	
+```
+	
 这里没有太多的新东西，除了我们访问了Spring的ApplicationContext为了获取一个Bean（HeadlineRepository).
 
 还要注意我们可以像这样访问其他DOM元素一样访问定制的标签的order属性：
 
+```java
 
 		final String order = element.getAttributeValue("order");
+```
 
 ## 声明整个方言
 为了完成方言我们还差最后最后一步，定义方言类本省。
@@ -399,6 +418,7 @@ getMessage(...)的行为相当于以上两个方法的组合。首先他尝试�
 
 这是代码，很简单：
 
+```java
 	public class ScoreDialect extends AbstractDialect {
 
     /*
@@ -425,12 +445,14 @@ getMessage(...)的行为相当于以上两个方法的组合。首先他尝试�
     }
 
 }
+```
 
 一旦我们的方言创建好我们需要在我们的模板引擎定义它。我们将使用 additionalDialects 属性来添加到Spring 标准方言中。
 
 
 来看看如何进行配置:
 
+```xml
 <bean id="templateEngine"
       class="org.thymeleaf.spring4.SpringTemplateEngine">
   <property name="templateResolver" ref="templateResolver" />
@@ -440,5 +462,6 @@ getMessage(...)的行为相当于以上两个方法的组合。首先他尝试�
     </set>
   </property>
 </bean>
+```
 
 好了，完成了，我们的联赛表格将按照我们希望的方式显示出来了。

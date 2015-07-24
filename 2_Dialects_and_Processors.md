@@ -9,7 +9,7 @@
 
 Dialects 是实现了org.thymeleaf.dialect.IDialect 接口的对象, 接口是这样的:
 
-```
+```java
 public interface IDialect {
 
     public String getPrefix();
@@ -19,13 +19,16 @@ public interface IDialect {
 
     public Set<IDocTypeTranslation> getDocTypeTranslations();
     public Set<IDocTypeResolutionEntry> getDocTypeResolutionEntries();
-}```
+}
+```
 
 让我们一步步来看他的方法:
 
 首先, 前缀:
 
+```java
     public String getPrefix();
+```
 
 这是你方言的tag和attribute的前缀，一种命名空间(它在添加到模板引擎时可以被改变）。如果你添加了一个attribute 为 ```earth``` 而你的方言的前缀是```planets```,你在模板里将你的attribute可以写成```planets:earth```.
 
@@ -33,23 +36,31 @@ public interface IDialect {
 
 现在，让我们看看IDialect接口最重要的部分，处理器：
 
-    public Set<IProcessor> getProcessors();
+```java
+    public Set<IProcessor> getProcessors(); 
+```
  
 处理器是主要在DOM节点上执行和进行变化的对象。我们将会在下一章节介绍更多细节。
 
 执行属性是在模板处理过程中为方言提供执行参数的一些对象。这些对象（usually utility objects通常是通用对象）将在执行器执行时可以使用。注意这些对象不会存在变量上下文中，只能在内部可见。
 
-    public Map<String,Object> getExecutionAttributes();
+```java
+    public Map<String,Object> getExecutionAttributes();   
+```
 
 更多接口方法:
 
+```java
     public Set<IDocTypeTranslation> getDocTypeTranslations();
+    
+```
 
 这个将返回一个DCOTYPE转换的集合.如果你记得入门教程。Thymeleaf可以处理一系列DOCTYPE的转换.这样允许你为你的模板指定一个转换，将你的DOCTYPE在输出时转换为另一个DOCTYPE .
 
 最后一个方法:
-
+```java
     public Set<IDocTypeResolutionEntry> getDocTypeResolutionEntries();
+```
 
 This method returns the DOCTYPE resolution entries available for the dialect. DOCTYPE resolution entries allow Thymeleaf’s XML Parser to locally resolve DTDs linked from your templates (从而避免远程检索这些DTD).
 
@@ -60,27 +71,32 @@ This method returns the DOCTYPE resolution entries available for the dialect. DO
 
 处理器需要实现```org.thymeleaf.processor.IProcessor``` 接口, 它们包含了应用到DOM节点的真实逻辑. 接口定于如下:
 
+```java
      public interface IProcessor extends Comparable<IProcessor> {
 
      public IProcessorMatcher<? extends Node> getMatcher();
 
      public ProcessorResult process(final Arguments arguments,final ProcessorMatchingContext processorMatchingContext, final Node node);
      }
+ ```
 
 
 首先我们可以看到，它扩展自Comparable接口，这是它确定优先级的方式。如果一个处理器排在另外一前面。他就有更高的优先级，这样他讲会比后面的更早的再相同的节点执行。
 
 现在看方法。一个matcher建立来匹配一个处理器是否可以应用到一个DOM节点:
 
+```java
     public IProcessorMatcher<? extends Node> getMatcher();
+ ```
     
 Matcher对象将检查节点的类型、名字和或属性（如果是一个DOM节点元素），如果是其他节点元素其他的节点特性也会被用来检查处理器是否可用。Thymeleaf附带一组预定义的IProcessorMatcher实现,这样您不必执行常见的任务，像通过它的名称或者它的一个属性匹配元素标记。   
 
 最终这个方法做真正的工作：
 
+```java
     public ProcessorResult process(final Arguments arguments,
                 final ProcessorMatchingContext processorMatchingContext, final Node node);
-                
+```                
                 
                 
 process(...) 有三个参数:
@@ -95,6 +111,7 @@ node是处理器将会执行的节点。注意这个处理器是应用到了特�
 
 Thymeleaf提供一个抽象工具类，用于扩展处理器，```org.thymeleaf.processor.AbstractProcessor``` 这个类实现Comparable接口。定义了获得本地化和国际化的标准机制:
 
+```java
      public abstract class AbstractProcessor implements IProcessor {
 
     /* Try to resolve a message first as template message, then if not */
@@ -118,7 +135,7 @@ Thymeleaf提供一个抽象工具类，用于扩展处理器，```org.thymeleaf.
     ...
 
       }
-      
+ ```     
       
 ### 特殊类型的处理器
 

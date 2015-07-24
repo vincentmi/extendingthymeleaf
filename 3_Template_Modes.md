@@ -2,8 +2,10 @@
 
 模板模式或许是Thymeleaf最强大的扩展点，模板模式实际上定义了什么可以被认为是一个“模板”。创建定制化的模板模式允许我们处理不同于默认的XML,XHTML,HTML5的文档格式。
 
-模板模式由他们的处理程序进行定义。处理程序需要实现接口```org.thymeleaf.templatemode.ITemplateModeHandler```:
+模板模式由他们的处理程序进行定义。处理程序需要实现接口
+```org.thymeleaf.templatemode.ITemplateModeHandler```:
 
+```java
      public interface ITemplateModeHandler {
 
              public String getTemplateModeName();
@@ -13,6 +15,7 @@
              public ITemplateWriter getTemplateWriter();
 
      }
+```
 
 每个模板模式的处理程序定义了Thymeleaf在处理指定模式的模板时需要的所有东西：一个解析器（接口ITemplateParser）,可以将模板转换为DOM树。一个Writer（接口ITemplateWriter）用于处理完成后转换DOM树到期望的结果格式。
 

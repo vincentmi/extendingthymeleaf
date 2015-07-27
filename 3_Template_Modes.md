@@ -3,7 +3,8 @@
 模板模式或许是Thymeleaf最强大的扩展点，模板模式实际上定义了什么可以被认为是一个“模板”。创建定制化的模板模式允许我们处理不同于默认的XML,XHTML,HTML5的文档格式。
 
 模板模式由他们的处理程序进行定义。处理程序需要实现接口
-```org.thymeleaf.templatemode.ITemplateModeHandler```:
+```org.thymeleaf.templatemode.ITemplateModeHandler``` :  
+
 
 
 ```java

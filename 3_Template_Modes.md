@@ -5,6 +5,7 @@
 模板模式由他们的处理程序进行定义。处理程序需要实现接口
 ```org.thymeleaf.templatemode.ITemplateModeHandler```:
 
+
 ```java
      public interface ITemplateModeHandler {
 
